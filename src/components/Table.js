@@ -12,6 +12,20 @@ const TableRow = ({props}) => {
       <td>{props.status ? 'active' : 'inactive'}</td>
     </tr>
   );
+};
+
+function applyFilter(array, filtersObject) {
+  let filteredArray = array;
+
+  Object.keys(filtersObject).forEach((fieldName) => {
+    const fieldValue = filtersObject[fieldName];
+
+    filteredArray = filteredArray.filter((item) => {
+      return item[fieldName].search(new RegExp(fieldValue, "i")) >= 0;
+    });
+  });
+
+  return filteredArray;
 }
 
 class Table extends React.Component {
@@ -27,11 +41,21 @@ class Table extends React.Component {
     this.props.nextPage();
   }
 
+  handleFilterChange(field, event) {
+    const filter = {
+      [field]: event.target.value
+    };
+
+    this.props.changeFilter(filter);
+  }
+
   render() {
-    const { users, activePage, pageSize } = this.props;
+    const { users, activePage, pageSize, filter } = this.props;
     const startIndex = activePage * pageSize;
     const endIndex = startIndex + pageSize;
-    const pagesCount = Math.ceil(users.length / pageSize);
+
+    const filteredUsers = applyFilter(users, filter);
+    const pagesCount = Math.ceil(filteredUsers.length / pageSize);
     return (
       <div>
         <table className='table table-striped table-hover'>
@@ -43,15 +67,15 @@ class Table extends React.Component {
               <th>Status</th>
             </tr>
             <tr>
-              <th><input type='text' /></th>
-              <th><input type='text' /></th>
-              <th><input type='text' /></th>
-              <th><input type='text' /></th>
+              <th><input type='text' className='form-control' onChange={(event) => this.handleFilterChange('firstName', event)}/></th>
+              <th><input type='text' className='form-control' onChange={(event) => this.handleFilterChange('lastName', event)}/></th>
+              <th><input type='text' className='form-control' onChange={(event) => this.handleFilterChange('email', event)}/></th>
+              <th><input type='text' disabled className='form-control' onChange={(event) => this.handleFilterChange('status', event)}/></th>
             </tr>
           </thead>
           <tbody>
           {
-            users.slice(startIndex, endIndex)
+            filteredUsers.slice(startIndex, endIndex)
               .map((user, key) => <TableRow key={key} props={user} />)
           }
           </tbody>
@@ -71,7 +95,8 @@ const mapStateToProps = (state) => {
   return {
     users: state.usersInfo.users,
     activePage: state.tableInfo.activePage,
-    pageSize: state.tableInfo.pageSize
+    pageSize: state.tableInfo.pageSize,
+    filter: state.tableInfo.filter
   };
 };
 
@@ -79,7 +104,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUsers: () => dispatch(userActions.getUsersAction()),
     nextPage: () => dispatch(tableActions.nextPage()),
-    prevPage: () => dispatch(tableActions.prevPage())
+    prevPage: () => dispatch(tableActions.prevPage()),
+    changeFilter: (filter) => dispatch(tableActions.setFilter(filter))
   };
 };
 

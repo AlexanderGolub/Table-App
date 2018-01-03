@@ -11,3 +11,10 @@ export function prevPage() {
     type: types.PREV_PAGE
   };
 }
+
+export function setFilter(filter) {
+  return {
+    type: types.SET_FILTER,
+    payload: filter
+  }
+}
