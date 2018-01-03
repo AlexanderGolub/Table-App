@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import Table from './Table';
 
 class Root extends React.Component {
@@ -8,9 +8,12 @@ class Root extends React.Component {
     return(
       <Provider store={this.props.store}>
         <Router>
-          <Route path="/">
+          <div>
+            <Route path="/">
+              <Redirect to="/users" />
+            </Route>
             <Route path="/users" component={Table} />
-          </Route>
+          </div>
         </Router>
       </Provider>
     );
