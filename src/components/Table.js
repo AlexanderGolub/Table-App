@@ -20,13 +20,19 @@ class Table extends React.Component {
 
   render() {
     return (
-      <table>
-        <thead>
+      <table className='table table-striped table-hover'>
+        <thead className='thead-dark'>
           <tr>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
             <th>Status</th>
+          </tr>
+          <tr>
+            <th><input type='text' /></th>
+            <th><input type='text' /></th>
+            <th><input type='text' /></th>
+            <th><input type='text' /></th>
           </tr>
         </thead>
         <tbody>

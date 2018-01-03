@@ -4,6 +4,8 @@ import { AppContainer } from 'react-hot-loader';
 import Root from './components/Root';
 import configureStore from './store/configureStore';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const store = configureStore();
 
 const render = Component => {
